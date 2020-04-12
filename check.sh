@@ -99,6 +99,12 @@ reset=`tput sgr0`
 
 # Go through every files inside the current directory
 find "$(pwd)" -type f -print0 | sort -z | while IFS= read -r -d '' file; do
+	filename=`basename "$file"`
+	# remove file from What's App
+	if [[ "$file" =~ [wW][aA] ]]; then
+		continue
+	fi
+
 	check_file_hash "$file"
 	found=$?
 	if [[ $found -ne 0 ]]; then
