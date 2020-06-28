@@ -95,7 +95,9 @@ check_file_name()
 # https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux#20983251
 green=`tput setaf 2`
 yellow=`tput setaf 3`
+grey=`tput setaf 8`
 reset=`tput sgr0`
+clear=`tput ed`
 
 # Go through every files inside the current directory
 find "$(pwd)" -type f -print0 | sort -z | while IFS= read -r -d '' file; do
@@ -105,13 +107,15 @@ find "$(pwd)" -type f -print0 | sort -z | while IFS= read -r -d '' file; do
 		continue
 	fi
 
+	echo -ne "${grey}current: $file\r${reset}"
+
 	check_file_hash "$file"
 	found=$?
 	if [[ $found -ne 0 ]]; then
 		if [[ $FOUND_RESULTS == 'hash' || $FOUND_RESULTS == 'all' ]]; then
 			# hash may appear multiple times inside input hash file, so display all the corresponding files
 			printf "%s\n" "$output_by_hash" | while IFS= read -r line; do
-				echo "${green}FOUND BY HASH : $file -> $line${reset}"
+				echo "${clear}${green}FOUND BY HASH: $file -> $line${reset}"
 			done
 		fi
 		continue
@@ -123,15 +127,15 @@ find "$(pwd)" -type f -print0 | sort -z | while IFS= read -r -d '' file; do
 		if [[ $FOUND_RESULTS == 'name' || $FOUND_RESULTS == 'all' ]]; then
 			# The name may appear multiple times, so display all the corresponding files
 			printf "%s\n" "$output_by_name" | while IFS= read -r line; do
-				echo "${yellow}FOUND BY NAME (check it!) : $file -> $line${reset}"
+				echo "${clear}${yellow}FOUND BY NAME (check it!): $file -> $line${reset}"
 			done
 		fi
 		continue
 	fi
 	
-	echo "NOT FOUND : $file"
+	echo "${clear}NOT FOUND : $file"
 done
 
-
+echo "${clear}"
 
 	
