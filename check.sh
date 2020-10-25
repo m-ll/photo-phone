@@ -11,11 +11,12 @@
 
 usage()
 {
-    echo "Usage: $0 [-h] [-d {none|hash|name|all}] -i /input/pathfile -r /reference/path"
+    echo "Usage: $0 [-h] [-d {none|hash|name|all}] -i /input/pathfile -r /reference/path -s /store/path"
     echo '  -h: help me'
     echo '  -d: display found files'
     echo '  -i: input pathfile'
     echo '  -r: reference path (the path where the images should be)'
+    echo '  -s: store path (the path where the not found images will be copied)'
     exit 2
 }
 
@@ -23,28 +24,35 @@ usage()
 INPUT_PATHFILE=
 # The reference path
 REFERENCE_PATH=
+# The store path
+STORE_PATH=
 # Display found results
 FOUND_RESULTS='name'
 
 # Process all the parameters
-while getopts ":hd:i:r:" option; do
-    case "${option}" in
-        i) INPUT_PATHFILE=${OPTARG} ;;
-        r) REFERENCE_PATH=${OPTARG} ;;
+while getopts ":hd:i:r:s:" option; do
+	case "${option}" in
+		i) INPUT_PATHFILE=${OPTARG} ;;
+		r) REFERENCE_PATH=${OPTARG} ;;
+		s) STORE_PATH=${OPTARG} ;;
 		d) FOUND_RESULTS=${OPTARG} ;;
-        h|*) usage ;;
-    esac
+		h|*) usage ;;
+	esac
 done
 shift $((OPTIND-1))
 
 # Check all the mandatory parameters
 
-if [[ -z $INPUT_PATHFILE ]]; then
-    echo 'input pathfile is empty !'
+if [[ -z "$INPUT_PATHFILE" || ! -f "$INPUT_PATHFILE" ]]; then
+    echo "input pathfile is empty or doesn't exist: $INPUT_PATHFILE"
     usage
 fi
-if [[ -z $REFERENCE_PATH ]]; then
-    echo 'reference path is empty !'
+if [[ -z "$REFERENCE_PATH" || ! -d "$REFERENCE_PATH" ]]; then
+    echo "reference path is empty or doesn't exist: $REFERENCE_PATH"
+    usage
+fi
+if [[ -n "$STORE_PATH" && ! -d "$STORE_PATH" ]]; then
+    echo "store path doesn't exist: $STORE_PATH"
     usage
 fi
 if [[ x"$FOUND_RESULTS" != x'none' && x"$FOUND_RESULTS" != x'hash' && x"$FOUND_RESULTS" != x'name' && x"$FOUND_RESULTS" != x'all' ]]; then
@@ -133,9 +141,15 @@ find "$(pwd)" -type f -print0 | sort -z | while IFS= read -r -d '' file; do
 		continue
 	fi
 	
-	echo "${clear}NOT FOUND : $file"
+	if [[ -z "$STORE_PATH" ]]; then
+		echo "${clear}NOT FOUND : $file"
+	else
+		suffix="${file#$(pwd)/}"	# Remove the start path to get the suffix
+		suffix="${suffix#/}"		# Remove the first '/' if any
+		to="$STORE_PATH/$suffix"
+		echo "${clear}NOT FOUND : $file ($suffix) -> $to"
+		mkdir -p "$(dirname "$to")" && cp "$file" "$to"
+	fi
 done
 
 echo "${clear}"
-
-	
