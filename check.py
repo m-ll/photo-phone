@@ -150,6 +150,7 @@ common_search_path = Path( os.path.commonpath( args.input_search_paths ) )
 # Check every files inside all input paths
 for search_path in args.input_search_paths:
     for current_pathfile in Path( search_path ).rglob( "*" ):
-        CheckFile( common_search_path, current_pathfile, hashes, Path( args.reference_path ), args.store_path, args.display_result )
+        if current_pathfile.is_file():
+            CheckFile( common_search_path, current_pathfile, hashes, Path( args.reference_path ), args.store_path, args.display_result )
 
 print()
