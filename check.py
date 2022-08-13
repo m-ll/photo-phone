@@ -57,15 +57,13 @@ args = parser.parse_args()
 
 def CheckFileByHash( iPathFile, iHashes ):
     sha = hashlib.sha256()
-    chunk_size = 1024*1024 # 1Mo
+    # The hash computation must be the same as in create-hash.py
+    chunk_size = 5*1024*1024 # 5Mo
 
     # Read and update the hash by chunk (to not load all the file in memory)
     with iPathFile.open( "rb" ) as f:
-        while True:
-            chunk = f.read( chunk_size )
-            if not chunk:
-                break
-            sha.update(chunk)
+        chunk = f.read( chunk_size )
+        sha.update(chunk)
 
     # Get the hash
     current_hash = sha.hexdigest()
@@ -84,7 +82,7 @@ def CheckFileByHash( iPathFile, iHashes ):
     # Note: a hash may appear multiple times in the hash list, some files need to be cleaned
     corresponding_pathfiles = []
     for found_hash_line in found_hash_lines:
-        corresponding_pathfiles.append( found_hash_line.strip( "0123456789abcdef " ) )
+        corresponding_pathfiles.append( found_hash_line.lstrip( "0123456789abcdef " ) )
 
     # Return the hash and the corresponding file(s)
     return current_hash, corresponding_pathfiles
