@@ -102,6 +102,15 @@ def CheckFileByName( iPathFile, iReferencePath ):
     # Otherwise, get all the files as a list
     return process.stdout.splitlines() # stdout is a binary string
 
+# https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
+def HumanSize( iSize ):
+    for unit in ["o", "Ko", "Mo", "Go", "To", "Po", "Eo", "Zo"]:
+        if abs(iSize) < 1000.0:
+            return f"{iSize:3.1f}{unit}"
+        iSize /= 1000.0
+
+    return f"{iSize:.1f}Yo"
+
 def CheckFile( iCommonSearchPath, iPathfile, iHashes, iReferencePath, iStorePath, iDisplayResult ):
     # remove file from What's App
     if iPathfile.name.lower().find( "wa" ) >= 0:
@@ -124,14 +133,17 @@ def CheckFile( iCommonSearchPath, iPathfile, iHashes, iReferencePath, iStorePath
         return
 
     if iStorePath is None:
-        print( Fore.RED + f"NOT FOUND: {iPathfile}" + Style.CLEAR )
+        print( Fore.RED + f"NOT FOUND: {iPathfile} [{HumanSize( iPathfile.stat().st_size )}]" + Style.CLEAR )
     else:
         suffix = iPathfile.relative_to( iCommonSearchPath )
         move_to_path = iStorePath / suffix
-        print( Fore.RED + f"NOT FOUND: {iPathfile} ({suffix}) -> {move_to_path}" + Style.CLEAR )
+        print( Fore.RED + f"NOT FOUND: {iPathfile} ({suffix}) [{HumanSize( iPathfile.stat().st_size )}] -> {move_to_path}" + Style.CLEAR )
 
         move_to_path.parent.mkdir( parents=True, exist_ok=True )
-        shutil.copy( iPathfile, move_to_path )
+        if move_to_path.exists():
+            print( f'... But already exists in store path ... {move_to_path}' )
+        else:
+            shutil.copy( iPathfile, move_to_path )
 
 #---
 #---
