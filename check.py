@@ -47,6 +47,7 @@ def DirectoryPath( iPath ):
 
 parser = argparse.ArgumentParser( description='Check missing images/videos in NAS.' )
 parser.add_argument( '-i', '--input-search-paths', nargs='+', type=DirectoryPath, help='Source folders to search files which are not in NAS', required=True )
+parser.add_argument( '-f', '--from-path', nargs='+', help='From this folder inside input' )
 parser.add_argument( '-a', '--input-hash-file', type=FilePath, help='Input pathfile containing all hashes', required=True )
 parser.add_argument( '-r', '--reference-path', type=DirectoryPath, help='Reference folder which represents the NAS', required=True )
 parser.add_argument( '-d', '--display-result', type=eDisplayResult, choices=list( eDisplayResult ), default=eDisplayResult.kName, help='Display found files' )
@@ -159,8 +160,23 @@ common_search_path = Path( os.path.commonpath( args.input_search_paths ) )
 
 # Check every files inside all input paths
 for search_path in args.input_search_paths:
-    for current_pathfile in Path( search_path ).rglob( "*" ):
+    pathfiles = Path( search_path ).rglob( "*" )
+    pathfiles_sorted_by_name = sorted( pathfiles, key=lambda s: str(s).casefold() )
+
+    from_path = None
+    if args.from_path is not None:
+        from_path = Path( search_path ).joinpath( '/'.join( args.from_path ) )
+
+    for current_pathfile in pathfiles_sorted_by_name:
         if current_pathfile.is_file():
+            # print( current_pathfile, end='' )
+            
+            # For all files which are before 'from_path', skip them
+            if from_path and str(current_pathfile).casefold() < str(from_path).casefold():
+                # print()
+                continue
+
+            # print( Fore.GREEN + '... processed' )
             CheckFile( common_search_path, current_pathfile, hashes, Path( args.reference_path ), args.store_path, args.display_result )
 
 print()
