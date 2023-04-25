@@ -54,7 +54,29 @@ parser.add_argument( '-d', '--display-result', type=eDisplayResult, choices=list
 parser.add_argument( '-s', '--store-path', type=DirectoryPath, help='Intermediate folder to store files which are not already on the NAS' )
 args = parser.parse_args()
 
+def GetNotFoundHashLogFile():
+    global args
+    not_found_hash_pathfile = Path( args.input_hash_file ).parent / 'not-found.hash'
+    return not_found_hash_pathfile
+
 #---
+
+def AddHashToNotFoundHashLogFile( iPathFile: Path, iHash: str ):
+    with GetNotFoundHashLogFile().open( 'a' ) as f:
+        f.write( f'{iHash}  {iPathFile}\n' )
+
+def IsUnwantedHash( iHash: str ):
+    unwanted_hashes_5Mo = [
+        # Mic
+
+        # Maman
+        'e0b1417f228371542f6d8e63b8ea201fd5531eb7a9cd0deee1b1bc7428a30eac',
+        '29353bfbaa53973544f9cedaa1f3b4200b800a32b22d9c0f9b1928bf5945ed24',
+        '1b6b10ada09f974deb8736affa41866ab3ea2e35128f29bf1d82a03fde583ad9',
+        'ddeb0acbab19dc6420867342d3f14ffccfdc32cf5ce5e77eac97cc7ffaf2dea5',
+        'f942f682a06d15c6347a0fee60f49e6a9a2e96e7b3b6eb32075ae4ade573b498',
+        ]
+    return iHash in unwanted_hashes_5Mo
 
 def CheckFileByHash( iPathFile, iHashes ):
     sha = hashlib.sha256()
@@ -77,7 +99,13 @@ def CheckFileByHash( iPathFile, iHashes ):
 
     # If the hash is not inside the hash list
     if not found_hash_lines:
-        return '', []
+        # Check if it is wanted to not have it in nas (not all images in phone should be on nas)
+        if IsUnwantedHash( current_hash ):
+            return current_hash, []
+        # Otherwise, hash is really missing and should be added
+        else:
+            AddHashToNotFoundHashLogFile( iPathFile, current_hash )
+            return '', []
 
     # The hash is already in the hash list, so try to get the corresponding file(s)
     # Note: a hash may appear multiple times in the hash list, some files need to be cleaned
@@ -154,6 +182,10 @@ def CheckFile( iCommonSearchPath, iPathfile, iHashes, iReferencePath, iStorePath
 hashes = []
 with Path( args.input_hash_file ).open( "r" ) as f:
     hashes = [line.strip() for line in f]
+
+# Empty the file with all not found hashes
+with GetNotFoundHashLogFile().open( 'w' ) as f:
+    pass
 
 # Find the most relevant common path of all input paths
 common_search_path = Path( os.path.commonpath( args.input_search_paths ) )
