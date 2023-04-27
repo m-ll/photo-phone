@@ -68,8 +68,15 @@ def AddHashToNotFoundHashLogFile( iPathFile: Path, iHash: str ):
 def IsUnwantedHash( iHash: str ):
     unwanted_hashes_5Mo = [
         # Mic
+        # - Doc
+        'a95ce50b260dde66d6df9732d21b02272ad4f6b09acee30a34efdcc87c87b556',
+        'aa6e0e5d658da792835cb7618aafc0d288d8dcf07434d95c55e2269d110ecc3e',
+        'a346dcc9a38cec0d86bbbd6889cc319b9de37e051579f2a204db41fb1e266f06',
+        'b1f06c55a807ad52a9db9e721b819f5c1a29d262d0fca190306b3b51261d6988',
+        '43d632d79d9c610d7556a5b2ff07a294b2c69bf0a3a0ed4d67fd6bdeb79c785b',
 
         # Maman
+        # - Docteur
         'e0b1417f228371542f6d8e63b8ea201fd5531eb7a9cd0deee1b1bc7428a30eac',
         '29353bfbaa53973544f9cedaa1f3b4200b800a32b22d9c0f9b1928bf5945ed24',
         '1b6b10ada09f974deb8736affa41866ab3ea2e35128f29bf1d82a03fde583ad9',
