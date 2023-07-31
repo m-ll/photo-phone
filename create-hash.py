@@ -10,16 +10,12 @@
 #
 
 import argparse
-from enum import Enum
 import hashlib
-import os
 from pathlib import Path
-import shutil
-import subprocess
-import sys
 
 from colorama import init, Fore, Back, Style
 init( autoreset=True )
+import progressbar
 
 #---
 
@@ -65,7 +61,12 @@ with output_file.open( "w" ) as f:
         input_path = input_path.resolve()
         print( Fore.GREEN + f'Input: {input_path}' )
 
-        for current_pathfile in input_path.rglob( "*" ):
-            if current_pathfile.is_file():
-                hash = CreateHash( current_pathfile )
-                print( f'{hash}  {current_pathfile.resolve()}', file=f )
+        max_value = len( list( input_path.rglob( "*" ) ) )
+
+        with progressbar.ProgressBar(max_value=max_value) as progress:
+            for current_pathfile in input_path.rglob( "*" ):
+                progress.increment()
+
+                if current_pathfile.is_file():
+                    hash = CreateHash( current_pathfile )
+                    print( f'{hash}  {current_pathfile.resolve()}', file=f )

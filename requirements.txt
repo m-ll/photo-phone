@@ -1,0 +1,4 @@
+colorama==0.4.6
+progressbar2==4.2.0
+python-utils==3.7.0
+typing-extensions==4.7.1
