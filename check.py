@@ -209,7 +209,7 @@ for search_path in args.input_search_paths:
     for current_pathfile in pathfiles_sorted_by_name:
         if current_pathfile.is_file():
             # print( current_pathfile, end='' )
-            
+
             # For all files which are before 'from_path', skip them
             if from_path and str(current_pathfile).casefold() < str(from_path).casefold():
                 # print()

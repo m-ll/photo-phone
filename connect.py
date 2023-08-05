@@ -49,4 +49,3 @@ if os == 'linux':
     cmd = ['curlftpfs'] + parameters
     # print( cmd )
     result = subprocess.run( cmd )
-
