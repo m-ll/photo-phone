@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
-# Copyright (c) 2018-19 m-ll. All Rights Reserved.
+# Copyright (c) 2018-23 m-ll. All Rights Reserved.
 #
 # Licensed under the MIT License.
 # See LICENSE file in the project root for full license information.
