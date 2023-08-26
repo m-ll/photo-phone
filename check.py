@@ -150,6 +150,11 @@ def HumanSize( iSize ):
 def CheckFile( iCommonSearchPath, iPathfile, iHashes, iReferencePath, iStorePath, iDisplayResult ):
     # remove file from What's App
     if iPathfile.name.lower().find( "wa" ) >= 0:
+        print( Fore.YELLOW + f"don't take whatsapp: {iPathfile}" + Style.CLEAR )
+        return
+    # remove files in .thumbnails folder
+    if iPathfile.match( '*/.thumbnails/*' ):
+        print( Fore.YELLOW + f"don't take .thumbnails: {iPathfile}" + Style.CLEAR )
         return
 
     print( Style.DIM + f"Current file: {iPathfile}" + Style.CLEAR, end='\r' )
