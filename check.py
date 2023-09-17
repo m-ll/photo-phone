@@ -83,12 +83,17 @@ def IsUnwantedHash( iHash: str ):
         'ddeb0acbab19dc6420867342d3f14ffccfdc32cf5ce5e77eac97cc7ffaf2dea5',
         'f942f682a06d15c6347a0fee60f49e6a9a2e96e7b3b6eb32075ae4ade573b498',
         ]
-    return iHash in unwanted_hashes_5Mo
+
+    unwanted_hashes_1Mo = [
+    ]
+
+    return iHash in unwanted_hashes_5Mo + unwanted_hashes_1Mo
 
 def CheckFileByHash( iPathFile, iHashes ):
     sha = hashlib.sha256()
     # The hash computation must be the same as in create-hash.py
-    chunk_size = 5*1024*1024 # 5Mo
+    chunk_size = 1*1024*1024 # 1Mo
+    # chunk_size = 5*1024*1024 # 5Mo
 
     # Read and update the hash by chunk (to not load all the file in memory)
     with iPathFile.open( "rb" ) as f:

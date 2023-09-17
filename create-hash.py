@@ -35,7 +35,8 @@ args = parser.parse_args()
 def CreateHash( iPathFile ):
     sha = hashlib.sha256()
     # The hash computation must be the same as in check.py
-    chunk_size = 5*1024*1024 # 5Mo
+    chunk_size = 1*1024*1024 # 1Mo
+    # chunk_size = 5*1024*1024 # 5Mo
 
     # Create the hash with the first chunk (to reduce time for big videos)
     with iPathFile.open( "rb" ) as f:
