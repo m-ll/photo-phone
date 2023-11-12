@@ -69,11 +69,16 @@ def IsUnwantedHash( iHash: str ):
     unwanted_hashes_5Mo = [
         # Mic
         # - Doc
-        'a95ce50b260dde66d6df9732d21b02272ad4f6b09acee30a34efdcc87c87b556',
-        'aa6e0e5d658da792835cb7618aafc0d288d8dcf07434d95c55e2269d110ecc3e',
-        'a346dcc9a38cec0d86bbbd6889cc319b9de37e051579f2a204db41fb1e266f06',
-        'b1f06c55a807ad52a9db9e721b819f5c1a29d262d0fca190306b3b51261d6988',
-        '43d632d79d9c610d7556a5b2ff07a294b2c69bf0a3a0ed4d67fd6bdeb79c785b',
+        'a95ce50b260dde66d6df9732d21b02272ad4f6b09acee30a34efdcc87c87b556', # 5Mo
+        'aa6e0e5d658da792835cb7618aafc0d288d8dcf07434d95c55e2269d110ecc3e', # 5Mo
+        'a346dcc9a38cec0d86bbbd6889cc319b9de37e051579f2a204db41fb1e266f06', # 5Mo
+        'b1f06c55a807ad52a9db9e721b819f5c1a29d262d0fca190306b3b51261d6988', # 5Mo
+        '43d632d79d9c610d7556a5b2ff07a294b2c69bf0a3a0ed4d67fd6bdeb79c785b', # 5Mo
+        '7d37db4c6fb75822c4d2df1fd6d3825fd03e3f4e62e6ca153fa7e96a3d51030a', # 1Mo
+        '7c4c0973248eecccf998110fdd8443f1b0b8bdefd267bf467e60e430cc5f7922', # 1Mo
+        '240299ec03d08d568cdbd29ba0513ffe770aed0dd88486231c668fdfe24b12e8', # 1Mo
+        '2ed10b9f5bdb27c2cf1c26e118254d91d8a290a01cf113944bc5991ab68486c6', # 1Mo
+        '2aee8e2aa4fe519b1b2ae8b91ad8a0b7af427fec429214451cca84b99f53d561', # 1Mo
 
         # Maman
         # - Docteur
